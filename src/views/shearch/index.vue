@@ -11,13 +11,13 @@
       <el-button type="primary" @click="searchStudentByName">搜索</el-button>
     </div>
     <br>
-    <el-button @click="resetDateFilter">清除日期过滤器</el-button>
     <el-button @click="clearFilter">清除所有过滤器</el-button>
     <el-table
       ref="filterTable"
       :data="tableData"
       style="width: 100%"
     >
+      <!--最左边尖括号展开-->
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
