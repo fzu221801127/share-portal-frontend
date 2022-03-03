@@ -14,7 +14,8 @@
     <el-button @click="clearFilter">清除所有过滤器</el-button>
     <el-table
       ref="filterTable"
-      :data="tableData"
+      v-loading="listLoading"
+      :data="list"
       style="width: 100%"
     >
       <!--最左边尖括号展开-->
@@ -22,16 +23,16 @@
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="标题">
-              <span>{{ props.row.name }}</span>
+              <span>{{ props.row.title }}</span>
             </el-form-item>
             <el-form-item label="类型">
-              <span>{{ props.row.tag }}</span>
+              <span>{{ props.row.type }}</span>
             </el-form-item>
             <el-form-item label="发布日期">
-              <span>{{ props.row.date }}</span>
+              <span>{{ props.row.releasetime }}</span>
             </el-form-item>
             <el-form-item label="点击量">
-              <span>{{ props.row.clicks }}</span>
+              <span>{{ props.row.click }}</span>
             </el-form-item>
             <el-form-item label="详情">
               <el-link
@@ -39,14 +40,14 @@
                 class="is-size-6"
                 @click="detailById(props.row.id)"
               >
-                {{ Substr(props.row.name, 0, 300) }}
+                {{ Substr(props.row.title, 0, 300) }}
               </el-link>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="title"
         label="标题"
         width="180"
       >
@@ -56,23 +57,23 @@
             class="is-size-6"
             @click="detailById(props.row.id)"
           >
-            {{ Substr(props.row.name, 0, 300) }}
+            {{ Substr(props.row.title, 0, 300) }}
           </el-link>
         </template>
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="content"
         label="内容预览"
         :formatter="formatter"
       >
         <template slot-scope="props">
           <span>
-            {{ Substr(props.row.address, 0, 300) }}
+            {{ Substr(props.row.content, 0, 300) }}
           </span>
         </template>
       </el-table-column>
       <el-table-column
-        prop="tag"
+        prop="type"
         label="类型"
         width="100"
         :filters="[{ text: '官方资源', value: '官方资源' }, { text: '个人资源', value: '个人资源' }]"
@@ -82,25 +83,25 @@
       >
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.tag === '官方资源' ? 'primary' : 'success'"
+            :type="scope.row.type === '官方资源' ? 'primary' : 'success'"
             disable-transitions
-          >{{ scope.row.tag }}</el-tag>
+          >{{ scope.row.type }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column
-        prop="date"
+        prop="releasetime"
         label="发布日期"
         sortable
         width="100"
-        column-key="date"
+        column-key="releasetime"
         align="center"
       />
       <el-table-column
-        prop="clicks"
+        prop="click"
         label="点击量"
         sortable
         width="100"
-        column-key="clicks"
+        column-key="click"
         align="center"
       />
     </el-table>
@@ -108,55 +109,58 @@
 </template>
 
 <script>
+import { getPostList, searchPostByTitle } from '@/api/post'
 
 export default {
   data() {
     return {
       input: '',
+      list: null,
+      listLoading: true,
       tableData: [{
-        id: '1',
+        id: 1,
         date: '2016-05-02',
         name: '王小虎古董车狗赛后晒哦和个骚货干啥都公司大',
         address: '上海市普陀区金沙江路 1518 弄io故事大纲十大h广佛爱好三个是故事大纲四阿哥粉碎大哥i十大是个代购i速度十大硅酸钙德国i哦i哦傻噶啥的撒大噶i哦好个傻瓜现场个傻瓜分公司的噶三国杀的刮痧噶啥的噶啥的噶啥的爱干啥噶啥噶噶啥的噶啥多个噶啥爱国散搭噶啥的噶噶啥的给沙噶啥多个沙杠杆收购按时给杀手多个艰苦撒旦和公开傻瓜啊ui给i十大固沙有啥共有四大给法院关于噶是否大于啥',
         tag: '官方资源',
         clicks: '122'
       }, {
-        id: '3',
+        id: 3,
         date: '2016-05-04',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1517 弄',
         tag: '个人资源',
         clicks: '853'
       }, {
-        id: '112',
+        id: 112,
         date: '2016-05-01',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1519 弄',
         tag: '官方资源',
         clicks: '533'
       }, {
-        id: '321',
+        id: 321,
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄',
         tag: '个人资源',
         clicks: '619'
       }, {
-        id: '1122',
+        id: 1122,
         date: '2016-05-01',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1519 弄',
         tag: '官方资源',
         clicks: '233'
       }, {
-        id: '152',
+        id: 152,
         date: '2016-05-01',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1519 弄',
         tag: '官方资源',
         clicks: '523'
       }, {
-        id: '154',
+        id: 154,
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1519 弄',
@@ -165,8 +169,31 @@ export default {
       }]
     }
   },
+  created() {
+    this.fetchData()
+    // eslint-disable-next-line no-undef
+  },
   methods: {
+    fetchData() {
+      console.log('加载表格')
+      this.listLoading = true
+      getPostList().then(response => {
+        this.list = response
+        this.listLoading = false
+        console.log(this.list)
+      })
+    },
     searchStudentByName() {
+      this.listLoading = true
+      if (!this.input) {
+        this.fetchData()
+      } else {
+        searchPostByTitle(this.input).then(response => {
+          console.log('搜索输入框内容为:' + this.input)
+          this.list = response
+          this.listLoading = false
+        })
+      }
     },
     detailById(id) {
       console.log(id)
@@ -206,10 +233,10 @@ export default {
       this.$refs.filterTable.clearFilter()
     },
     formatter(row, column) {
-      return row.address
+      return row.content
     },
     filterTag(value, row) {
-      return row.tag === value
+      return row.type === value
     },
     filterHandler(value, row, column) {
       const property = column['property']
