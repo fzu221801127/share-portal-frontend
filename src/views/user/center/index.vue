@@ -6,7 +6,7 @@
       <p>生日</p>
       <el-input v-model="input2" placeholder="请输入内容" style="width:70%" />
       <p>签名</p>
-      <el-input v-model="input3" placeholder="请输入内容" style="width:70%" />
+      <el-input v-model="input3" :rows="3" type="textarea" placeholder="请输入内容" style="width:70%" />
       <el-button style="margin-top:20px;margin-left:20%">修改</el-button>
     </div>
     <div style="width:30%;float:left;margin-top:6%;margin-left:5%">
