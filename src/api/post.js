@@ -6,11 +6,11 @@ import request from '@/utils/request2'
  *@date:
  *@version: V1.0.0
 */
-export function getPostList(data) {
+export function getPostPageList(currentPage, pagesize) {
   return request({
     url: '/posts',
     method: 'get',
-    data
+    params: { currentPage, pagesize }
   })
 }
 

@@ -112,11 +112,21 @@
         align="center"
       />
     </el-table>
+    <el-pagination
+      style="text-align:center"
+      :total="total"
+      :page-sizes="[10, 20, 30]"
+      layout="total, sizes, prev, pager, next, jumper"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
 <script>
-import { getPostList, searchPostByTitle } from '@/api/post'
+import { getPostPageList, searchPostByTitle } from '@/api/post'
 
 export default {
   data() {
@@ -173,7 +183,10 @@ export default {
         address: '上海市普陀区金沙江路 1519 弄',
         tag: '个人资源',
         clicks: '23'
-      }]
+      }],
+      currentPage: 1,
+      pageSize: 10,
+      total: 1
     }
   },
   created() {
@@ -184,10 +197,11 @@ export default {
     fetchData() {
       console.log('加载表格')
       this.listLoading = true
-      getPostList().then(response => {
-        this.list = response
+      getPostPageList(this.currentPage, this.pagesize).then(response => {
+        this.list = response.page.list
+        this.total = response.page.total
         this.listLoading = false
-        console.log(this.list)
+        console.log(response)
       })
     },
     searchPostByTitle() {
@@ -248,6 +262,15 @@ export default {
     filterHandler(value, row, column) {
       const property = column['property']
       return row[property] === value
+    },
+    handleSizeChange(val) {
+      this.pagesize = val
+      this.currentPage = 1
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.fetchData()
     }
   }
 }
