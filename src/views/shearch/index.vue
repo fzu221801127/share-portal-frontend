@@ -6,9 +6,10 @@
         v-model="input"
         placeholder="输入标题模糊搜索"
         style="width:500px;margin-left:1%;margin-right:1%"
-        @keyup.enter.native="searchStudentByName"
+        clearable
+        @keyup.enter.native="searchPostByTitle"
       />
-      <el-button type="primary" @click="searchStudentByName">搜索</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="searchPostByTitle">搜索</el-button>
     </div>
     <br>
     <el-button @click="clearFilter">清除所有过滤器</el-button>
@@ -22,6 +23,9 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="id">
+              <span>{{ props.row.id }}</span>
+            </el-form-item>
             <el-form-item label="标题">
               <span>{{ props.row.title }}</span>
             </el-form-item>
@@ -34,7 +38,7 @@
             <el-form-item label="点击量">
               <span>{{ props.row.click }}</span>
             </el-form-item>
-            <el-form-item label="详情">
+            <el-form-item label="跳转到详情">
               <el-link
                 :underline="false"
                 class="is-size-6"
@@ -42,6 +46,9 @@
               >
                 {{ Substr(props.row.title, 0, 300) }}
               </el-link>
+            </el-form-item>
+            <el-form-item label="内容" style="width:100%">
+              <span>{{ props.row.content }}</span>
             </el-form-item>
           </el-form>
         </template>
@@ -57,7 +64,7 @@
             class="is-size-6"
             @click="detailById(props.row.id)"
           >
-            {{ Substr(props.row.title, 0, 300) }}
+            {{ Substr(props.row.title, 0, 250) }}
           </el-link>
         </template>
       </el-table-column>
@@ -68,7 +75,7 @@
       >
         <template slot-scope="props">
           <span>
-            {{ Substr(props.row.content, 0, 300) }}
+            {{ Substr(props.row.content, 0, 250) }}
           </span>
         </template>
       </el-table-column>
@@ -183,7 +190,7 @@ export default {
         console.log(this.list)
       })
     },
-    searchStudentByName() {
+    searchPostByTitle() {
       this.listLoading = true
       if (!this.input) {
         this.fetchData()
