@@ -1,6 +1,20 @@
 import request from '@/utils/request2'
 
 /*
+ *@description:举报资源
+ *@author: zhuangweilong
+ *@date:
+ *@version: V1.0.0
+*/
+export function tipOffPost(data) {
+  return request({
+    url: '/posts/tipOffPost',
+    method: 'put',
+    data
+  })
+}
+
+/*
  *@description:获取资源列表
  *@author: zhuangweilong
  *@date:
