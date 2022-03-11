@@ -102,7 +102,7 @@ export const constantRoutes = [
   {
     path: '/user',
     component: Layout,
-    redirect: '/user/table',
+    redirect: '/user/center',
     name: 'User',
     meta: { title: '个人中心', icon: 'el-icon-s-help' },
     children: [
@@ -113,8 +113,8 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'table' }
       },
       {
-        path: 'collection ',
-        name: 'Collection ',
+        path: 'collection',
+        name: 'Collection',
         component: () => import('@/views/user/collection/index'),
         meta: { title: '我的收藏', icon: 'tree' }
       }
