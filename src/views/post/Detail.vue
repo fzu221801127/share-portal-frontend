@@ -114,6 +114,8 @@ import 'vditor/dist/index.css'
 import CreateComment from '@/components/Comment/CreateComment'
 import Comments from '@/components/Comment/Comments'
 import { getPostById, tipOffPost } from '@/api/post'
+import { userCollectPost } from '@/api/collection'
+import { logout, getInfo } from '@/api/user'
 
 export default {
   name: 'Detail',
@@ -159,15 +161,29 @@ export default {
      *@version: V1.0.0
      */
     collection() {
-      // collectBlog(this.getRequest().key).then((response) => {
-      //   const { data } = response
-      //   if (data.code == '200') {
-      //     this.$message({
-      //       message: '收藏成功！',
-      //       type: 'success'
-      //     })
-      //   }
-      // })
+      if (this.$session.get('userinfo') != null) {
+        var userinfo = this.$session.get('userinfo')
+        console.log(userinfo.id)
+        console.log(this.getRequest().key)
+        var collection = {
+          userId: userinfo.id,
+          postId: this.getRequest().key
+        }
+        userCollectPost(collection).then(res => {
+          if (res) {
+            this.$message({
+              type: 'success',
+              message: '收藏成功'
+            })
+          }
+        })
+      } else {
+        logout()
+        getInfo().then(res => {
+          console.log('res:')
+          console.log(res)
+        })
+      }
     },
     /**
      *@functionName:  thumb

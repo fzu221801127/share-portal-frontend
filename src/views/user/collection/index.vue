@@ -99,40 +99,30 @@
         column-key="click"
         align="center"
       />
+      <el-table-column
+        prop="opera"
+        label="操作"
+        width="80px"
+        show-overflow-tooltip
+      >
+        <template slot-scope="scope">
+          <el-button type="text" @click="unCollectionPostById(scope.row.id)">取消收藏</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import { getCollectionPostListByUserId } from '@/api/collection'
+import { getCollectionPostListByUserId, userUnCollectPost } from '@/api/collection'
+import { logout, getInfo } from '@/api/user'
 
 export default {
   data() {
     return {
       input: '',
       listLoading: true,
-      tableData: [{
-        'id': 1,
-        'title': '测试用标题',
-        'content': '测试用内容',
-        'releasetime': '2022-01-12 23:18:31',
-        'type': '个人资源',
-        'click': 643,
-        'userId': 'admin',
-        'state': '未被举报',
-        'tag': null
-      },
-      {
-        'id': 2,
-        'title': '测试用标题',
-        'content': '测试用内容',
-        'releasetime': '2022-03-01 23:18:31',
-        'type': '官方资源',
-        'click': 643,
-        'userId': 'admin',
-        'state': '未被举报',
-        'tag': null
-      }]
+      tableData: []
     }
   },
   created() {
@@ -141,13 +131,47 @@ export default {
   },
   methods: {
     fetchData() {
-      var userinfo = this.$session.get('userinfo')
-      console.log(userinfo.id)
-      getCollectionPostListByUserId(userinfo.id).then(response => {
-        console.log(response)
-        this.tableData = response
-        this.listLoading = false
-      })
+      if (this.$session.get('userinfo') != null) {
+        var userinfo = this.$session.get('userinfo')
+        console.log(userinfo.id)
+        getCollectionPostListByUserId(userinfo.id).then(response => {
+          console.log(response)
+          this.tableData = response
+          this.listLoading = false
+        })
+      } else {
+        logout()
+        getInfo().then(res => {
+          console.log('res:')
+          console.log(res)
+        })
+      }
+    },
+    unCollectionPostById(id) {
+      if (this.$session.get('userinfo') != null) {
+        var userinfo = this.$session.get('userinfo')
+        console.log(userinfo.id)
+        console.log(id)
+        var collection = {
+          userId: userinfo.id,
+          postId: id
+        }
+        userUnCollectPost(collection).then(res => {
+          if (res) {
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            })
+            this.fetchData()
+          }
+        })
+      } else {
+        logout()
+        getInfo().then(res => {
+          console.log('res:')
+          console.log(res)
+        })
+      }
     },
     detailById(id) {
       console.log(id)
