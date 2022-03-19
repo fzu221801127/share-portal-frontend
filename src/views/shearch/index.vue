@@ -112,6 +112,7 @@
         align="center"
       />
     </el-table>
+    <br>
     <el-pagination
       style="text-align:center"
       :total="total"
@@ -122,6 +123,11 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+    <div style="text-align:center">
+      <span style="color:red">
+        本站所有官方资源来源于网友交流,只供网络测试、请在24小时内删除所下内容,个人资源如不是发布者所创作也请在24小时内删除所下内容
+      </span>
+    </div>
   </div>
 </template>
 
