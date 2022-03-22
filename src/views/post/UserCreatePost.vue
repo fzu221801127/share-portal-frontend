@@ -55,6 +55,7 @@ import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import { getNowTime } from '@/utils/time'
 import { insertPost } from '@/api/post'
+import { logout, getInfo } from '@/api/user'
 export default {
   name: 'UserCreatePost',
   data() {
@@ -140,7 +141,18 @@ export default {
       ]
     })
   },
-  created() {},
+  created() {
+    if (this.$session.get('userinfo') != null) {
+      var userinfo = this.$session.get('userinfo')
+      console.log(userinfo.id)
+    } else {
+      logout()
+      getInfo().then(res => {
+        console.log('res:')
+        console.log(res)
+      })
+    }
+  },
   methods: {
     /**
      *@functionName:    submitForm
