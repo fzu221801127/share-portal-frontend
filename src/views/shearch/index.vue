@@ -133,6 +133,7 @@
 
 <script>
 import { getPostPageList, searchPostByTitle } from '@/api/post'
+import { logout, getInfo } from '@/api/user'
 
 export default {
   data() {
@@ -196,6 +197,16 @@ export default {
     }
   },
   created() {
+    if (this.$session.get('userinfo') != null) {
+      var userinfo = this.$session.get('userinfo')
+      console.log(userinfo.id)
+    } else {
+      logout()
+      getInfo().then(res => {
+        console.log('res:')
+        console.log(res)
+      })
+    }
     this.fetchData()
     // eslint-disable-next-line no-undef
   },
