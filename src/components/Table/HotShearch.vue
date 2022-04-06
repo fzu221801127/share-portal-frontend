@@ -39,7 +39,6 @@ export default {
       getShearchCount().then(response => {
         this.data[10].value = response - this.count
         this.data[10].name = '其他'
-        console.log(this.data[10].value)
         this.myEcharts2()
       })
     })
