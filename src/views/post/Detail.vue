@@ -175,6 +175,11 @@ export default {
               type: 'success',
               message: '收藏成功'
             })
+          } else {
+            this.$message({
+              type: 'info',
+              message: '已收藏过该资源'
+            })
           }
         })
       } else {
