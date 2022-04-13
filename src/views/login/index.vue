@@ -129,6 +129,7 @@
 <script>
 // import { validUsername } from '@/utils/validate'
 import { login } from '@/api/portalUser'
+import { insertUser, getUserById } from '@/api/usermanage'
 
 export default {
   name: 'Login',
@@ -246,35 +247,57 @@ export default {
       //   this.$router.push({ path: this.redirect || '/' })
       //   this.loading = false
       // })
-      var user = {
+      var form = {
         id: this.registerForm.username,
         password: this.registerForm.password1,
         password2: this.registerForm.password2
       }
-      if (user.password !== user.password2) {
+      if (form.password !== form.password2) {
         this.$message({
           type: 'info',
           message: '两次输入密码不一致'
         })
         this.loading = false
-      } else if (user.id === '') {
+      } else if (form.id === '') {
         this.$message({
           type: 'info',
           message: '账号不能为空'
         })
         this.loading = false
-      } else if (user.password.length < 6) {
+      } else if (form.password.length < 6) {
         this.$message({
           type: 'info',
           message: '密码需大于6位'
         })
         this.loading = false
       } else {
-        this.$message({
-          type: 'success',
-          message: '注册成功'
+        getUserById(form.id).then(response => {
+          var user = response
+          console.log('user:')
+          console.log(user)
+          if (user.id != null) {
+            this.$message({
+              type: 'error',
+              message: '账号名已存在!'
+            })
+          } else {
+            var userMesg = {
+              id: form.id,
+              password: form.password
+            }
+            insertUser(userMesg).then(response => {
+              console.log('表单如下')
+              console.log(this.form)
+              if (response) {
+                this.$message({
+                  type: 'success',
+                  message: '注册成功'
+                })
+                this.isLogin = true
+              }
+            })
+          }
         })
-        console.log(user)
         this.loading = false
       }
     },
